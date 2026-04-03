@@ -1,59 +1,108 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+// app/_layout.tsx
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useFonts } from 'expo-font';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { useColorScheme } from '@/components/useColorScheme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+const ONBOARDING_KEY = 'hpd_onboarded';
+
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+  const [fontsLoaded] = useFonts({});
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
+  const [hasOnboarded, setHasOnboarded] = useState(false);
 
   useEffect(() => {
-    if (loaded) {
+    async function checkOnboarding() {
+      try {
+        const value = await AsyncStorage.getItem(ONBOARDING_KEY);
+        setHasOnboarded(value === 'true');
+      } catch {
+        setHasOnboarded(false);
+      } finally {
+        setOnboardingChecked(true);
+      }
+    }
+    checkOnboarding();
+  }, []);
+
+  useEffect(() => {
+    if (fontsLoaded && onboardingChecked) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded, onboardingChecked]);
 
-  if (!loaded) {
+  if (!fontsLoaded || !onboardingChecked) {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <>
+      {/*
+        ─── Stack Navigator ────────────────────────────────────────────
+        Stack is the ROOT navigator. It owns ALL top-level routes.
+
+        Key fix: we explicitly declare every screen here with
+        the correct options. This PREVENTS Expo Router from
+        auto-generating its own tab bar for app/ level files.
+
+        The (tabs) group contains our real tab navigator.
+        onboarding and +not-found are standalone Stack screens —
+        they must NEVER appear as tabs.
+      */}
+      <Stack>
+        {/*
+          (tabs) → our main app with the real bottom tab bar
+          This is the home screen for returning users.
+        */}
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        />
+
+        {/*
+          onboarding → full screen, no header, no back gesture
+          Only shown on first launch.
+        */}
+        <Stack.Screen
+          name="onboarding"
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+        />
+
+        {/*
+          +not-found → shown when a route doesn't exist
+          Clean error screen, no header needed.
+        */}
+        <Stack.Screen
+          name="+not-found"
+          options={{ headerShown: false }}
+        />
+      </Stack>
+
+      {/* Redirect to onboarding if first launch */}
+      {!hasOnboarded && <InitialRedirect />}
+
+      <StatusBar style="light" />
+    </>
+  );
 }
 
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+// ─── Initial Redirect ─────────────────────────────────────────────────────────
+// Handles redirect as a side effect after layout mounts.
+// Must be a separate component so useEffect runs at the right time.
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-  );
+function InitialRedirect() {
+  const { router } = require('expo-router');
+
+  useEffect(() => {
+    router.replace('/onboarding');
+  }, []);
+
+  return null;
 }
