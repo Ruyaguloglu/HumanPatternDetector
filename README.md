@@ -87,33 +87,39 @@ Daily Input (< 10 seconds)
 ## Features
 
 ### ◉ Daily Check-In
+
 - Animated dot selector for mood and focus (1–5 scale)
 - Semantic color coding — warm scale for mood, blue scale for focus
 - One entry per day enforcement
 - Logged confirmation with today's values displayed
 
 ### ≡ Signal History
+
 - Reverse-chronological entry list with visual progress bars
 - Relative date labels (Today, Yesterday, date)
 - FlatList virtualization — performant at any data size
 
 ### ◈ Pattern Insights
+
 - Primary behavioral signal with confidence percentage
 - 6-metric analytics grid (stability, averages, volatility, trends)
 - Dynamically generated observation cards
 - Cold-start state with progress indicator (needs 3+ entries)
 
 ### ∿ Trend Visualization
+
 - Custom line charts built without any external chart library
 - Mood and focus trends over last 30 entries
 - Summary stats panel
 
 ### Onboarding
+
 - 3-page swipeable introduction
 - Sets cold-start expectations honestly
 - Skip option — zero friction
 
 ### Settings
+
 - Full data export as JSON via system share sheet
 - Two-step confirmed data reset
 - Privacy statement built in
@@ -157,27 +163,27 @@ HumanPatternDetector/
 
 ### Key Principles
 
-| Principle | Implementation |
-|-----------|----------------|
-| Local-first | AsyncStorage — no server, no account required |
+| Principle              | Implementation                                       |
+| ---------------------- | ---------------------------------------------------- |
+| Local-first            | AsyncStorage — no server, no account required        |
 | Separation of concerns | UI / Domain / Analytics / Storage strictly separated |
-| Pure analytics | Engine functions have zero side effects |
-| Type safety | TypeScript strict mode throughout |
-| Performance | FlatList virtualization, useMemo on analytics |
+| Pure analytics         | Engine functions have zero side effects              |
+| Type safety            | TypeScript strict mode throughout                    |
+| Performance            | FlatList virtualization, useMemo on analytics        |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology | Reason |
-|-------|------------|--------|
-| Framework | React Native + Expo SDK 54 | Cross-platform, fast iteration |
-| Language | TypeScript strict mode | Data precision, full safety |
-| Navigation | Expo Router (file-based) | Clean structure, no boilerplate |
-| Storage | AsyncStorage | Local-first, zero config |
-| Animations | RN Animated API | Native thread, smooth 60fps |
-| Charts | Custom-built | Zero dependency, full control |
-| Build | EAS Build | Cloud iOS builds on Windows |
+| Layer      | Technology                 | Reason                          |
+| ---------- | -------------------------- | ------------------------------- |
+| Framework  | React Native + Expo SDK 54 | Cross-platform, fast iteration  |
+| Language   | TypeScript strict mode     | Data precision, full safety     |
+| Navigation | Expo Router (file-based)   | Clean structure, no boilerplate |
+| Storage    | AsyncStorage               | Local-first, zero config        |
+| Animations | RN Animated API            | Native thread, smooth 60fps     |
+| Charts     | Custom-built               | Zero dependency, full control   |
+| Build      | EAS Build                  | Cloud iOS builds on Windows     |
 
 ---
 
@@ -186,17 +192,20 @@ HumanPatternDetector/
 The pattern detection engine in `src/analytics/signals.ts` uses real statistical methods:
 
 **Variance** — how spread out scores are day to day:
+
 ```
 [3, 3, 4, 3]  →  low variance   →  Stable
 [1, 5, 1, 5]  →  high variance  →  Volatile
 ```
 
 **Stability Score** — normalized to 0–100:
+
 ```
 stabilityScore = (1 - combinedVariance / maxVariance) × 100
 ```
 
 **Pearson Correlation** — mood ↔ focus relationship:
+
 ```
 +1.0  →  mood and focus always move together
  0.0  →  no relationship
@@ -204,6 +213,7 @@ stabilityScore = (1 - combinedVariance / maxVariance) × 100
 ```
 
 **Trend Detection** — first half vs second half average:
+
 ```
 delta > +0.4  →  Rising
 delta < -0.4  →  Falling
@@ -215,6 +225,7 @@ otherwise     →  Flat
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - Expo Go app (iOS or Android)
 
@@ -234,21 +245,25 @@ Scan the QR code with Expo Go. Done.
 ## Roadmap
 
 ### v1.1 — Habit Formation
+
 - [ ] Daily push notification reminder
 - [ ] Streak counter on Log screen
 - [ ] Custom reminder time in Settings
 
 ### v1.2 — Intelligence
+
 - [ ] Weekly summary notification
 - [ ] Burnout pattern detection
 - [ ] Recovery cycle recognition
 
 ### v1.3 — Polish
+
 - [ ] Light / dark mode toggle
 - [ ] Submission micro-animation
 - [ ] Enhanced empty states
 
 ### v2.0 — Scale
+
 - [ ] SQLite migration for performance
 - [ ] Optional encrypted cloud backup
 - [ ] CSV export
@@ -270,23 +285,23 @@ Scan the QR code with Expo Go. Done.
 
 ## Development Phases
 
-| Phase | Deliverable | Status |
-|-------|-------------|--------|
-| 0 | Foundation, design system, navigation | ✅ Complete |
-| 1 | Data model, storage layer, custom hooks | ✅ Complete |
-| 2 | Check-in screen + animated selectors | ✅ Complete |
-| 3 | History screen with FlatList | ✅ Complete |
-| 4 | Analytics engine (variance, correlation, trends) | ✅ Complete |
-| 5 | Insights screen — engine output | ✅ Complete |
-| 6 | Trends screen — custom charts | ✅ Complete |
-| 7 | Onboarding — first-launch flow | ✅ Complete |
-| 8 | Settings, export, production config | ✅ Complete |
+| Phase | Deliverable                                      | Status      |
+| ----- | ------------------------------------------------ | ----------- |
+| 0     | Foundation, design system, navigation            | ✅ Complete |
+| 1     | Data model, storage layer, custom hooks          | ✅ Complete |
+| 2     | Check-in screen + animated selectors             | ✅ Complete |
+| 3     | History screen with FlatList                     | ✅ Complete |
+| 4     | Analytics engine (variance, correlation, trends) | ✅ Complete |
+| 5     | Insights screen — engine output                  | ✅ Complete |
+| 6     | Trends screen — custom charts                    | ✅ Complete |
+| 7     | Onboarding — first-launch flow                   | ✅ Complete |
+| 8     | Settings, export, production config              | ✅ Complete |
 
 ---
 
 ## Author
 
-**RÜYA GULOĞLU**
+**RÜYA GÜLOĞLU**
 Mobile developer focused on behavioral data and minimal product design.
 
 [GitHub] https://github.com/Ruyaguloglu · [LinkedIn] https://www.linkedin.com/in/r%C3%BCya-g%C3%BClo%C4%9Flu-950b3b234
@@ -295,7 +310,7 @@ Mobile developer focused on behavioral data and minimal product design.
 
 <div align="center">
 
-*"Small data points → meaningful behavioral insights."*
+_"Small data points → meaningful behavioral insights."_
 
 **Human Pattern Detector** — Built from scratch. Shipped with intention.
 
